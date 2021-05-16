@@ -10,7 +10,8 @@
 		$body = $('body'),
 		$header = $('#header'),
 		$titleBar = null,
-		$nav = $('#nav'),
+		$nav_nl = $('#nav_nl'),
+		$nav_en = $('#nav_en'),
 		$wrapper = $('#wrapper');
 
 	// Breakpoints.
@@ -56,10 +57,10 @@
 
 	// Header Panel.
 
-		// Nav.
-			var $nav_a = $nav.find('a');
+		// Nav_nl
+			var $nav_nl_a = $nav_nl.find('a');
 
-			$nav_a
+			$nav_nl_a
 				.addClass('scrolly')
 				.on('click', function() {
 
@@ -70,7 +71,7 @@
 							return;
 
 					// Deactivate all links.
-						$nav_a.removeClass('active');
+						$nav_nl_a.removeClass('active');
 
 					// Activate link *and* lock it (so Scrollex doesn't try to activate other links as we're scrolling to this one's section).
 						$this
@@ -105,9 +106,74 @@
 									$section.removeClass('inactive');
 
 								// No locked links? Deactivate all links and activate this section's one.
-									if ($nav_a.filter('.active-locked').length == 0) {
+									if ($nav_nl_a.filter('.active-locked').length == 0) {
 
-										$nav_a.removeClass('active');
+										$nav_nl_a.removeClass('active');
+										$this.addClass('active');
+
+									}
+
+								// Otherwise, if this section's link is the one that's locked, unlock it.
+									else if ($this.hasClass('active-locked'))
+										$this.removeClass('active-locked');
+
+							}
+						});
+
+				});
+
+		// Nav_en
+			var $nav_en_a = $nav_en.find('a');
+
+			$nav_en_a
+				.addClass('scrolly')
+				.on('click', function() {
+
+					var $this = $(this);
+
+					// External link? Bail.
+						if ($this.attr('href').charAt(0) != '#')
+							return;
+
+					// Deactivate all links.
+						$nav_en_a.removeClass('active');
+
+					// Activate link *and* lock it (so Scrollex doesn't try to activate other links as we're scrolling to this one's section).
+						$this
+							.addClass('active')
+							.addClass('active-locked');
+
+				})
+				.each(function() {
+
+					var	$this = $(this),
+						id = $this.attr('href'),
+						$section = $(id);
+
+					// No section for this link? Bail.
+						if ($section.length < 1)
+							return;
+
+					// Scrollex.
+						$section.scrollex({
+							mode: 'middle',
+							top: '1%',
+							bottom: '1%',
+							initialize: function() {
+
+								// Deactivate section.
+									$section.addClass('inactive');
+
+							},
+							enter: function() {
+
+								// Activate section.
+									$section.removeClass('inactive');
+
+								// No locked links? Deactivate all links and activate this section's one.
+									if ($nav_en_a.filter('.active-locked').length == 0) {
+
+										$nav_en_a.removeClass('active');
 										$this.addClass('active');
 
 									}
